@@ -5,6 +5,8 @@ from bs4 import BeautifulSoup
 import time
 import datetime
 import pandas as pd
+import numpy as np
+import random
 
 # Fans page ==================================================================
 ## parse_content
@@ -24,12 +26,17 @@ def parse_content(data):
             ele.find('div', {'data-testid':'story-subtitle'})['id'], # id
             ele.find('abbr')['data-utime'], #time
             content, # content
-            ele.find('a')['href'].split('?')[0] #link
+            # ele.find('a')['href'].split('?')[0] #link
+            ''
             ]) 
     df = pd.DataFrame(data=df, columns=['NAME', 'ID', 'TIME', 'CONTENT', 'LINK'])
-    df['PAGEID'] = df['ID'].apply(lambda x: re.findall('[0-9]{5,}', x)[0])
-    df['POSTID'] = df['ID'].apply(lambda x: re.findall('[0-9]{5,}', x)[1])
+    # df['PAGEID'] = df['ID'].apply(lambda x: re.findall('[0-9]{5,}', x)[0])
+    # df['POSTID'] = df['ID'].apply(lambda x: re.findall('[0-9]{5,}', x)[1])
+    
+    df['PAGEID'] = df['ID'].apply(lambda x: re.split(r'_|;|-|:',x)[2])
+    df['POSTID'] = df['ID'].apply(lambda x: re.split(r'_|;|:-',x)[3])
     df['TIME'] = df['TIME'].apply(lambda x: datetime.datetime.fromtimestamp(int(x)).strftime("%Y-%m-%d %H:%M:%S"))
+    df['LINK'] ='https://www.facebook.com/story.php?story_fbid=' + df['POSTID'] + '&id=' + df['PAGEID']
     df = df.drop('ID',axis=1)
     return df
 
@@ -42,10 +49,10 @@ def get_reaction(data):
             df.append([
                 ele[3][1]['__bbox']['result']['data']['feedback']['subscription_target_id'], # post id
                 ele[3][1]['__bbox']['result']['data']['feedback']['owning_profile']['id'], # page id
-                ele[3][1]['__bbox']['result']['data']['feedback']['display_comments_count']['count'],  # display_comments_count
                 ele[3][1]['__bbox']['result']['data']['feedback']['comment_count']['total_count'], # total_comments_count
                 ele[3][1]['__bbox']['result']['data']['feedback']['reaction_count']['count'], # reaction_count
                 ele[3][1]['__bbox']['result']['data']['feedback']['share_count']['count'], # share_count
+                ele[3][1]['__bbox']['result']['data']['feedback']['display_comments_count']['count'],  # display_comments_count
                 ele[3][1]['__bbox']['result']['data']['feedback']['top_reactions']['edges'], # reactions
             ])
         except:
@@ -72,7 +79,8 @@ def get_reaction(data):
     reaction_df['TYPE'] = reaction_df['REACTIONS'].apply(lambda x: x['node']['reaction_type'])
     reaction_df = reaction_df.drop_duplicates(['PAGEID', 'POSTID', 'TYPE'], keep='first')
     reaction_df = reaction_df.pivot(index=['PAGEID', 'POSTID'], columns='TYPE', values='COUNT').reset_index()
-    return reaction_df
+    df = pd.merge(df, reaction_df, how = 'left', on=['POSTID', 'PAGEID']).drop(['REACTIONS'], axis=1)
+    return df
 
 # Crawl_PagePosts
 def Crawl_PagePosts(pageurl, until_date='2019-01-01'):
@@ -128,10 +136,10 @@ def Crawl_PagePosts(pageurl, until_date='2019-01-01'):
 
         except:
             break_times += 1
-            print('break_times:', break_times)
+            print('break_times:%d，請更換IP！' % break_times)
         
-        time.sleep(2)
-        if break_times > 5:
+        time.sleep(random.choice([i for i in range(1, 5)]))
+        if break_times > np.inf:
             break
     
     # join content and reactions
@@ -139,7 +147,8 @@ def Crawl_PagePosts(pageurl, until_date='2019-01-01'):
     feedback_df = pd.concat(feedback_df, ignore_index=True)
     df = pd.merge(left=content_df, right=feedback_df, how='left', on=['PAGEID', 'POSTID'])
     df = df.fillna(value={'ANGER':0, 'HAHA':0, 'LIKE': 0, 'LOVE':0, 'SORRY':0, 'SUPPORT':0, 'WOW': 0}) 
-    df['UPDATETIME'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")      
+    df['UPDATETIME'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    df = df[df['TIME'] >= until_date]      
     print('There are {} posts in DataFrame.'.format(str(df.shape[0])))
     return df
 

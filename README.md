@@ -7,7 +7,19 @@
 * ~~目前尚不支援爬取貼文的巢狀留言~~  (留言功能改版中)
 
 ## Quickstart
-### 爬取Fanspage粉專貼文
+### Crawler.py 
+適用於舊版Fanpage的爬蟲程式，此程式不須登入FB帳密
+* pageurl：粉絲專頁的網址
+* until_date：爬到哪一天結束 (大約的最舊一則貼文日期)
+
+### new_fanpage_post_id_crawler.py 
+適用於新版Fanpage的爬蟲程式，取得貼文id
+### new_fanpage_crawler.py 
+適用於新版Fanpage的爬蟲程式，使用new_fanpage_post_id_crawler.py之後，利用輸出的貼文ID檔案取得貼文內容與互動內容
+
+適用於新版Fanpage的爬蟲程式使用Selenium與WebDriver (ChromeDriver)，需自行下載並置於同一目錄。
+請確認chromedriver的版本跟你電腦chrome的版本相同
+此兩程式須輸入FB帳密至程式中
 
 ### 爬取留言
 

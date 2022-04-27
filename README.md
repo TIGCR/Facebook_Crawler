@@ -5,8 +5,7 @@
 * 舊版爬蟲程式Crawler.py參考TENG-LIN YU(游騰林)的[FB爬蟲套件](https://github.com/TLYu0419/facebook_crawler)，改寫成不須安裝套件的形式。
 * 新版爬蟲程式new_fanpage_post_id_crawler.py，new_fanpage_crawler.py適用於新版Fanpage的爬蟲程式使用Selenium與WebDriver (ChromeDriver)，需自行下載ChromeDriver並置於同一目錄。並確認chromedriver的版本跟你電腦chrome的版本相同
 * 留言爬蟲程式(尚未上傳)
-* ~~除了爬取Facebook Fanspage、Groups貼文內容及統計資訊以外，再加入從貼文清單中爬取留言的功能 (需設定FB帳號密碼，搭配[chromedriver](https://chromedriver.chromium.org/)一起使用)~~ (留言功能改版中)
-* ~~目前尚不支援爬取貼文的巢狀留言~~  (留言功能改版中)
+*  除了爬取Facebook Fanspage、Groups貼文內容及統計資訊以外，再加入從貼文清單中爬取留言的功能 (需設定FB帳號密碼，搭配[chromedriver](https://chromedriver.chromium.org/)一起使用)~~ (留言功能改版中)
 
 * 由於從FB爬取資料是違反臉書的[使用規則](https://about.fb.com/news/2021/04/how-we-combat-scraping/)，故一但爬取過多的內容，臉書會限制你的IP。目前可參考的一個解決方法是：使用行動網路(e.g.電腦連手機網路)，執行爬蟲，IP被鎖(出現請更換IP的訊息)之後，開啓手機的飛航模式再關掉，IP位子就會換掉了。如果使用的wifi有多個來源，或有2.4G及5G的模組也可以藉由切換不同wifi來切換IP。
 
@@ -24,5 +23,7 @@
 此兩程式須輸入FB帳密至程式中
 
 ### 爬取留言
+使用方法1:用fb貼文爬蟲的結果取得postid跟pageid，爬取檔案內所有貼文之留言
+使用方法2:直接輸入想要爬的貼文postid及pageid(在網址中)，爬取指定貼文留言
 
 ## FAQ

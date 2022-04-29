@@ -23,6 +23,6 @@
 此兩程式須輸入FB帳密至程式中
 
 ### 爬取留言 (fb_page_comments_main.py)
-參考[說明.txt](Comment Crawler_v1/說明.txt)
+參考[說明.txt](https://github.com/TIGCR/Facebook_Crawler/blob/main/Comment%20Crawler_v1/%E8%AA%AA%E6%98%8E.txt)
 
 ## FAQ

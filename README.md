@@ -22,7 +22,7 @@
 適用於新版Fanpage的爬蟲程式，使用new_fanpage_post_id_crawler.py之後，利用輸出的貼文ID檔案取得貼文內容與互動內容
 此兩程式須輸入FB帳密至程式中
 
-### 爬取留言
+### 爬取留言 (fb_page_comments_main.py)
 參考說明.txt
 
 ## FAQ

@@ -19,8 +19,7 @@
 ### new_fanpage_post_id_crawler.py 
 適用於新版Fanpage的爬蟲程式，取得貼文id
 ### new_fanpage_crawler.py 
-適用於新版Fanpage的爬蟲程式，使用new_fanpage_post_id_crawler.py之後，利用輸出的貼文ID檔案取得貼文內容與互動內容 (貼文內容僅能取得部份)
-此兩程式須輸入FB帳密至程式中
+適用於新版Fanpage的爬蟲程式，使用new_fanpage_post_id_crawler.py之後，利用輸出的貼文ID檔案取得貼文內容與互動內容 (貼文內容僅能取得部份)。此兩程式須輸入FB帳密至程式中
 
 ### 爬取留言 (fb_page_comments_main.py)
 參考[說明.txt](https://github.com/TIGCR/Facebook_Crawler/blob/main/Comment%20Crawler_v1/%E8%AA%AA%E6%98%8E.txt)

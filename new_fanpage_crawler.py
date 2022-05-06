@@ -1,6 +1,5 @@
 import pandas as pd
 from selenium import webdriver
-
 import requests
 from bs4 import BeautifulSoup
 import time
@@ -43,7 +42,8 @@ def Datetime_proccessing(x):
                 return datetime.strptime('%d年' % datetime.today().year + x, "%Y年%m月%d日").date()
     except:
         return(datetime.today().date())
-def GET_content(postid_list,pageid_list,email,password):
+
+def GET_content(postid_list,pageid,email,password):
     '''
     postid 要爬的文章，要list形式
     pageid=page_id (可用之前的程式抓)
@@ -54,9 +54,8 @@ def GET_content(postid_list,pageid_list,email,password):
     #logging.basicConfig(filename='PageID%s.log' % pageid, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S', level=logging.INFO)
     dfs=[]
     t=0
-    for i in range(len(postid_list)):
-        postid=postid_list[i]
-        pageid=pageid_list[i]
+    for postid in postid_list:
+        pageid=pageid
         URL="https://mbasic.facebook.com/story.php?story_fbid="+str(postid)+"&id="+str(pageid)
 
         headers = {'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
@@ -123,6 +122,7 @@ def GET_content(postid_list,pageid_list,email,password):
             REACTIONCOUNT=0
             SHARECOUNT='抓不到'
         concat_df = pd.DataFrame()
+        concat_df['URL']=URL
         concat_df['POST_ID']=[postid]
         concat_df['NAME']=[pagename]
         concat_df['TIME']=[posttime]
@@ -197,7 +197,7 @@ def GET_content(postid_list,pageid_list,email,password):
         concat_df['WOW']=[WOW]
         dfs.append(concat_df)
         t+=1
-        print(f'完成文章:{t}')
+        print(f'全部：{len(postid_list)}\n完成文章:{t}')
         time.sleep(random.choice([3,5,6,7,10]))
     print('爬蟲完成')
     return dfs
@@ -208,19 +208,18 @@ def GET_content(postid_list,pageid_list,email,password):
 3. email=facebook帳號
 4.password=facebook密碼
 '''
-
-# 使用post_id_crawler.py所取得的post id excel檔
-id_list=pd.read_excel('POSTID&PAGEID.xlsx')
-postid_list=list(id_list['POSTID'])
-pageid_list=list(id_list['PAGEID'])
-
 email=''
 password=''
-
-df=GET_content(postid_list,pageid_list,email,password)
+id_list=pd.read_excel('POSTID&PAGEID.xlsx')
+##len(id_list)
+#id_list=id_list.drop_duplicates()
+#id_list=id_list.reset_index()[90:]
+postid_list=id_list['POSTID']
+pageid=id_list['PAGEID'][0]
+df=GET_content(postid_list,pageid,email,password)
 df2=pd.concat(df)
-# 將post內容存成excel檔
-df2.to_excel('粉絲團貼文內容.xlsx')
+df2['PAGEID']=pageid
+df2.to_excel('貼文內容.xlsx',index=False)
 
 
 

@@ -84,7 +84,14 @@ def GET_content(postid_list,pageid,email,password):
         except:
             posttime='抓不到'
         try:
-            context=soup.find('title').text
+            try:
+                context=soup.find('div',{'class':'bm'}).text
+            except:
+                context=soup.find('div',{'class':'bp'}).text
+        except:
+            context=''
+        try:
+            #context=soup.find('title').text
             texts=soup.find('script').contents[0]
             texts2=texts.split('commentCount":')[1]
             i=0
@@ -117,7 +124,7 @@ def GET_content(postid_list,pageid,email,password):
             except:
                 SHARECOUNT=text4[0:i-1]
         except:
-            context='抓不到'
+            #context='抓不到'
             COMMENTCOUNT='抓不到'
             REACTIONCOUNT=0
             SHARECOUNT='抓不到'

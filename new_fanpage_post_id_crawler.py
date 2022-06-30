@@ -55,10 +55,14 @@ def get_time(x):
         Time_list.append(Time)
     return Time_list
 def get_post_id(x):
+    
     t1=x.find_all('a',{'class','_5ayv _qdx'})
     id_list=[]
     for i in t1:
-        id_list.append(re.search(r'post_id.(\d{1,20})',i['href']).group().replace('post_id.',''))
+        try:
+            id_list.append(re.search(r'story_key.(\d{1,20})',i['href']).group().replace('story_key.',''))
+        except:
+            pass
     
     return id_list
 def get_next_page(x):
@@ -113,7 +117,7 @@ def crawl_post_id(email,password,url,until_date):
     response=s.get(f'https://mbasic.facebook.com/{fan_page_name}',headers=headers)
     soup = BeautifulSoup(response.text, features="lxml")
     url2='https://mbasic.facebook.com'+soup.find('div',{'class':'bk'}).find_all('a')[-3]['href']
-    print(f'粉絲專業名稱{fan_page_name}')
+    print(f'粉絲專業名稱：{fan_page_name}')
     time.sleep(3)
     post_id_list=[]
     while dates > until_date:
@@ -135,7 +139,9 @@ def crawl_post_id(email,password,url,until_date):
 email=''
 password=''
 url='URL of FB Fan page'
-post_IDs=crawl_post_id(email=email,password=password,url=url,until_date='2022-04-25')
+#until_date is the approximate date for stop scraping
+post_IDs=crawl_post_id(email=email,password=password,url=url,until_date='2022-06-01')
+
 df=pd.DataFrame(post_IDs,columns=['POSTID'])
 df=df.drop_duplicates()
 df['PAGEID']=get_PAGEID(url)

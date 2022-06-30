@@ -49,6 +49,7 @@ def GET_content(postid_list,pageid,email,password):
     pageid=page_id (可用之前的程式抓)
     
     '''
+    start=time.time()
     s=get_fb_cookie(email=email,password=password)
     #logging.getLogger("requests").setLevel(logging.DEBUG)
     #logging.basicConfig(filename='PageID%s.log' % pageid, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S', level=logging.INFO)
@@ -129,7 +130,7 @@ def GET_content(postid_list,pageid,email,password):
             REACTIONCOUNT=0
             SHARECOUNT='抓不到'
         concat_df = pd.DataFrame()
-        concat_df['URL']=URL
+        concat_df['URL']= [URL]
         concat_df['POST_ID']=[postid]
         concat_df['NAME']=[pagename]
         concat_df['TIME']=[posttime]
@@ -160,12 +161,15 @@ def GET_content(postid_list,pageid,email,password):
         response2 = s.get(URL,headers=headers2)
         soup2 = BeautifulSoup(response2.text, features="lxml")
         react=soup2.find('div',{'class':'y'})
-        reacts_text=react.find_all('a')
-        react_dict={}
-        for i in reacts_text[1:]:
-            marks=i.find('img')['alt']
-            num=int(i['href'][i['href'].rfind('=')+1:])
-            react_dict[marks]=num
+        try:
+            reacts_text=react.find_all('a')
+            react_dict={}
+            for i in reacts_text[1:]:
+                marks=i.find('img')['alt']
+                num=int(i['href'][i['href'].rfind('=')+1:])
+                react_dict[marks]=num
+        except:
+            react_dict={}
         try:
             LIKE=react_dict['讚']
         except:
@@ -206,7 +210,8 @@ def GET_content(postid_list,pageid,email,password):
         t+=1
         print(f'全部：{len(postid_list)}\n完成文章:{t}')
         time.sleep(random.choice([3,5,6,7,10]))
-    print('爬蟲完成')
+    end=time.time()
+    print(f'爬蟲完成,共花了{end-start}')
     return dfs
 '''
 參數說明：
@@ -227,6 +232,5 @@ df=GET_content(postid_list,pageid,email,password)
 df2=pd.concat(df)
 df2['PAGEID']=pageid
 df2.to_excel('貼文內容.xlsx',index=False)
-
 
 

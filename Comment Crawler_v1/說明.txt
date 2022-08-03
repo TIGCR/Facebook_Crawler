@@ -8,7 +8,7 @@
 *流程:
 
 1.取得cookie:
-將fb 帳號 及 密碼 參數輸入「get_fb_cookie」function
+將fb 帳號 及 密碼 參數輸入fb_page_comments_main.py的「get_fb_cookie」function
 
 2.爬取留言:
 將 cookie 、 postid列表 、 pageid 及是否爬取巢狀留言(Bool) 參數輸入「fb_page_comment_crawler」function

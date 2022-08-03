@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed May  4 22:52:15 2022
+Spyder Editor
 
-@author: Michael
+This is a temporary script file.
 """
 import pandas as pd
 from selenium import webdriver
 import requests
 from bs4 import BeautifulSoup
+from selenium.webdriver.common.by import By
 import time
 import re
 import os
@@ -15,20 +16,22 @@ import logging
 from datetime import datetime,timedelta,date
 import json
 import random
-
-#取得登入cookie
 def get_fb_cookie(email:str, password:str): 
     chromeOptions = webdriver.ChromeOptions()
     chromeOptions.add_argument('--headless')
     driver = webdriver.Chrome(options=chromeOptions)
     driver.get('https://www.facebook.com/')
-    driver.find_element_by_css_selector('#email').send_keys(email)
-    driver.find_element_by_css_selector("input[type='password']").send_keys(password)
-    driver.find_element_by_css_selector("button[name='login']").click()
+    driver.find_element(By.CSS_SELECTOR,"#email").send_keys(email)
+    driver.find_element(By.CSS_SELECTOR,"input[type='password']").send_keys(password)
+    driver.find_element(By.CSS_SELECTOR,"button[name='login']").click()
+   
     time.sleep(2)
+    
     cookies = driver.get_cookies()
+   
     s = requests.Session()
     #將cookies放入session中
+    
     for cookie in cookies:
         s.cookies.set(cookie['name'], cookie['value'])
     driver.quit()
@@ -56,11 +59,13 @@ def get_time(x):
     return Time_list
 def get_post_id(x):
     
-    t1=x.find_all('a',{'class','_5ayv _qdx'})
+    t1=x.find_all('div',{'class':'_55wo _56bf _5rgl'})
+    if len(t1)<1:
+        t1=x.find_all('div',{'class':'bl bm bn'})
     id_list=[]
     for i in t1:
         try:
-            id_list.append(re.search(r'story_key.(\d{1,20})',i['href']).group().replace('story_key.',''))
+            id_list.append(re.search(r'"top_level_post_id":"(\d{1,20})',i['data-ft']).group().replace('"top_level_post_id":"',''))
         except:
             pass
     
@@ -116,7 +121,10 @@ def crawl_post_id(email,password,url,until_date):
     fan_page_name=re.search(r'.com/(\S{1,100})',url).group().replace('.com/','')
     response=s.get(f'https://mbasic.facebook.com/{fan_page_name}',headers=headers)
     soup = BeautifulSoup(response.text, features="lxml")
-    url2='https://mbasic.facebook.com'+soup.find('div',{'class':'bk'}).find_all('a')[-3]['href']
+    for i in soup.find_all('a'):
+        if i.text=='動態時報':
+            tar=i['href']
+    url2='https://mbasic.facebook.com'+tar
     print(f'粉絲專業名稱：{fan_page_name}')
     time.sleep(3)
     post_id_list=[]
@@ -136,6 +144,7 @@ def crawl_post_id(email,password,url,until_date):
         
     #soups = BeautifulSoup(driver.page_source)
     return post_id_list
+
 email=''
 password=''
 url='URL of FB Fan page'

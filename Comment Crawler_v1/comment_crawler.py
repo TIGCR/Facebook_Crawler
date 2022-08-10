@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Aug  3 21:11:18 2022
-
-@author: Emile
-"""
-
 import pandas as pd
 from selenium import webdriver
 import requests

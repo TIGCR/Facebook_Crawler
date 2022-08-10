@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Aug  3 21:13:26 2022
-
-@author: Emile
-"""
-
 import pandas as pd
 import comment_crawler as fb
 

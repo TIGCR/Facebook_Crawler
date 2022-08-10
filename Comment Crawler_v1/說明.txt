@@ -8,13 +8,13 @@
 *流程:
 
 1.取得cookie:
-將fb 帳號 及 密碼 參數輸入fb_page_comments_main.py的「get_fb_cookie」function
+將fb 帳號 及 密碼 參數輸入comment_crawler_main.py的「get_fb_cookie」function
 
 2.爬取留言:
 將 cookie 、 postid列表 、 pageid 及是否爬取巢狀留言(Bool) 參數輸入「fb_page_comment_crawler」function
 
 註：
--「get_fb_cookie」是用selenium去登入取得cookie，之後的留言爬蟲則是用requests
+-「get_fb_cookie」是用selenium去登入取得cookie (版本需4.3.0以上) ，之後的留言爬蟲則是用requests
 
 -「fb_page_comment_crawler」function：
     (一)是對mbasic.facebook.com發出請求
